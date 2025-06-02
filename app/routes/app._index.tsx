@@ -91,7 +91,6 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
  };
 };
 
-// Rest of the component remains the same
 export default function Index() {
  const fetcher = useFetcher<typeof action>();
 
@@ -147,15 +146,19 @@ export default function Index() {
                      removeUnderline
                    >
                      Admin GraphQL
-                   </Link>{" "}
-                   mutation demo, to provide a starting point for app
-                   development.
-                   Try the {" "}
-                   <Link url="/app/d1example" removeUnderline>
-                     D1 Example Route to view an example of using D1 in a remix route.
-                   </Link>
-                     
-                 </Text>
+  </Link>{" "}
+  mutation demo, to provide a starting point for app
+  development.
+  Try the {" "}
+  <Link url="/app/d1example" removeUnderline>
+    D1 Example Route
+  </Link>
+  {" "}and the{" "}
+  <Link url="/app/durableExample" removeUnderline>
+    Durable Objects Example Route
+  </Link>
+  {" "}to view examples of using both storage options in remix routes.
+</Text>
                </BlockStack>
                <BlockStack gap="200">
                  <Text as="h3" variant="headingMd">
@@ -255,13 +258,23 @@ export default function Index() {
                      <Text as="span" variant="bodyMd">
                        Database
                      </Text>
-                     <Link
-                       url="https://developers.cloudflare.com/d1/"
-                       target="_blank"
-                       removeUnderline
-                     >
-                       Cloudflare D1
-                     </Link>
+                     <span>
+                       <Link
+                         url="https://developers.cloudflare.com/d1/"
+                         target="_blank"
+                         removeUnderline
+                       >
+                         Cloudflare D1
+                       </Link>
+                       {", "}
+                       <Link
+                         url="https://developers.cloudflare.com/durable-objects/"
+                         target="_blank"
+                         removeUnderline
+                       >
+                         Durable Objects
+                       </Link>
+                     </span>
                    </InlineStack>
                    <InlineStack align="space-between">
                      <Text as="span" variant="bodyMd">

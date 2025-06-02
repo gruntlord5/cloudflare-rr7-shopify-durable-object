@@ -8,7 +8,7 @@ A Shopify app starter, built on top of Cloudflare Workers. This template provide
 
 ## Why would I use this?
 
-This lets you deploy an entire Shopify React Router 7 starter application to Cloudflare with a single click. It will setup a repo and a Cloudflare worker named after your project, along with a D1 database and binding to store the session data.
+This lets you deploy an entire Shopify React Router 7 starter application to Cloudflare with a single click. It will setup a repo and a Cloudflare worker named after your project, along with Durable Objects for session storage and a D1 database binding for additional data storage needs.
 
 Cloudflare Workers is flexible, scalable, and even has a [free tier for those just getting started.](https://developers.cloudflare.com/workers/platform/pricing/)
 
@@ -17,6 +17,18 @@ Cloudflare Workers is flexible, scalable, and even has a [free tier for those ju
 | - | - | - | - |
 | **Free** | 100,000 per day | No charge for duration | 10 milliseconds of CPU time per invocation |
 | **Standard** | 10 million included per month +$0.30 per additional million | No charge or limit for duration | 30 million CPU milliseconds included per month +$0.02 per additional million CPU milliseconds Max of [5 minutes of CPU time](https://developers.cloudflare.com/workers/platform/limits/#worker-limits) per invocation (default: 30 seconds) Max of 15 minutes of CPU time per [Cron Trigger](https://developers.cloudflare.com/workers/configuration/cron-triggers/) or [Queue Consumer](https://developers.cloudflare.com/queues/configuration/javascript-apis/#consumer) invocation |
+
+## Session Storage and Data Architecture
+This template uses Durable Objects for session storage, which provides excellent performance and consistency for store-specific data. Durable Objects are strongly consistent, geographically distributed, and perfect for storing any data that is specific to an individual Shopify store. When a store first uses your app, a Durable Object is created geographically close to that store, ensuring fast access times and strong consistency for all subsequent requests from that store.
+A D1 database is also included for cases where you need traditional SQL database functionality for data that spans across multiple stores or requires complex relational operations.
+
+
+ **When to use Durable Objects:**
+- Store-specific data that is unique to each individual Shopify store. Since each store gets its own Durable Object instance created near their geographic location, this is ideal for any data that belongs to a single store and needs fast, consistent access.
+
+
+ **When to use a D1 Database:**
+- Cross-store data, analytics that aggregate information from multiple stores, or any data that needs to be queried across your entire application rather than being specific to one store.
 
 ## Prerequisites
 
