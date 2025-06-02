@@ -20,5 +20,21 @@
       "database_name": "cloudflare-rr7-shopify-durable-object",
       "database_id": "3161cad8-2a28-440a-9bc0-af5b6ab8ac21"
     }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SHOPIFY_STORAGE",
+        "class_name": "ShopifyStorage"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "ShopifyStorage"
+      ]
+    }
   ]
 }

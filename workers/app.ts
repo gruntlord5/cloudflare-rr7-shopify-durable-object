@@ -1,11 +1,10 @@
 import { createRequestHandler } from "react-router";
-import { initializeShopifySessionsTable } from "../app/db.server";
+import { ShopifyStorage } from "./durable-storage";
 
 // Define your Env type with all your bindings
 interface Env {
   DB: D1Database;
-  DB2?: D1Database;  // Optional secondary database
-  DB3?: D1Database;  // Optional tertiary database
+  SHOPIFY_STORAGE: DurableObjectNamespace;
   SHOPIFY_API_KEY: string;
   SHOPIFY_API_SECRET: string;
   SHOPIFY_APP_URL: string;
@@ -20,8 +19,6 @@ declare module "react-router" {
       ctx: ExecutionContext;
     };
     db: D1Database;
-    db2?: D1Database;  // Optional secondary database
-    db3?: D1Database;  // Optional tertiary database
   }
 }
 
@@ -39,18 +36,12 @@ export default {
           env,
           ctx,
         },
-        // Pass databases directly in context
+        // Pass database directly in context
         db: env.DB,
-        db2: env.DB2,  // Will be undefined if not bound
-        db3: env.DB3,  // Will be undefined if not bound
       };
 
-      // Initialize Shopify sessions table on startup
-      try {
-        await initializeShopifySessionsTable(loadContext);
-      } catch (error) {
-        console.error('Failed to initialize Shopify sessions table:', error);
-      }
+      // Session tables are now initialized per shop when needed
+      // No general initialization required
       
       return requestHandler(request, loadContext);
     } catch (error) {
@@ -59,3 +50,6 @@ export default {
     }
   },
 } satisfies ExportedHandler<Env>;
+
+// Export the Durable Object class
+export { ShopifyStorage };

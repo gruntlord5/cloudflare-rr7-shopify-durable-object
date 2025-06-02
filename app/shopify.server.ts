@@ -5,46 +5,39 @@ import {
 } from "@brandboostinggmbh/shopify-app-react-router/server";
 import { Session } from "@shopify/shopify-api";
 import { SessionStorage } from "@shopify/shopify-app-session-storage";
-import {
-  DatabaseContext,
-  storeSession,
-  loadSession,
-  deleteSession,
-  deleteSessions,
-  findSessionsByShop,
-} from "./db.server";
+import { shopifySessionDb } from "./db.server";
 
 // Create a D1 session storage adapter that works with context
 class D1SessionStorage implements SessionStorage {
-  private context: DatabaseContext;
+  private context: any;
 
-  constructor(context: DatabaseContext) {
+  constructor(context: any) {
     this.context = context;
   }
 
   async storeSession(session: Session): Promise<boolean> {
-    return storeSession(this.context, session);
+    return await shopifySessionDb.storeSession(this.context, session);
   }
 
   async loadSession(id: string): Promise<Session | undefined> {
-    return loadSession(this.context, id);
+    return await shopifySessionDb.loadSession(this.context, id);
   }
 
   async deleteSession(id: string): Promise<boolean> {
-    return deleteSession(this.context, id);
+    return await shopifySessionDb.deleteSession(this.context, id);
   }
 
   async deleteSessions(ids: string[]): Promise<boolean> {
-    return deleteSessions(this.context, ids);
+    return await shopifySessionDb.deleteSessions(this.context, ids);
   }
 
   async findSessionsByShop(shop: string): Promise<Session[]> {
-    return findSessionsByShop(this.context, shop);
+    return await shopifySessionDb.findSessionsByShop(this.context, shop);
   }
 }
 
 // Factory function to create Shopify app with context
-export function createShopifyApp(context: DatabaseContext) {
+export function createShopifyApp(context: any) {
   const sessionStorage = new D1SessionStorage(context);
 
   return shopifyApp({
@@ -66,15 +59,18 @@ export function createShopifyApp(context: DatabaseContext) {
   });
 }
 
+// Remove the general initialization function since we initialize per shop
+// Session tables are now created automatically when needed
+
 export const apiVersion = ApiVersion.January25;
 
 // Main authenticate function that requires context
 export const authenticate = {
-  admin: async (request: Request, context: DatabaseContext) => {
+  admin: async (request: Request, context: any) => {
     const shopify = createShopifyApp(context);
     return shopify.authenticate.admin(request);
   },
-  public: async (request: Request, context: DatabaseContext) => {
+  public: async (request: Request, context: any) => {
     const shopify = createShopifyApp(context);
     return shopify.authenticate.public(request);
   }
@@ -82,28 +78,28 @@ export const authenticate = {
 
 // Main unauthenticated function that requires context
 export const unauthenticated = {
-  admin: async (request: Request, context: DatabaseContext) => {
+  admin: async (request: Request, context: any) => {
     const shopify = createShopifyApp(context);
     return shopify.unauthenticated.admin(request);
   },
-  public: async (request: Request, context: DatabaseContext) => {
+  public: async (request: Request, context: any) => {
     const shopify = createShopifyApp(context);
     return shopify.unauthenticated.public(request);
   }
 };
 
 // Other helper functions
-export const login = async (request: Request, context: DatabaseContext) => {
+export const login = async (request: Request, context: any) => {
   const shopify = createShopifyApp(context);
   return shopify.login(request);
 };
 
-export const registerWebhooks = async (request: Request, context: DatabaseContext) => {
+export const registerWebhooks = async (request: Request, context: any) => {
   const shopify = createShopifyApp(context);
   return shopify.registerWebhooks(request);
 };
 
-export const addDocumentResponseHeaders = (request: Request, response: Response, context: DatabaseContext) => {
+export const addDocumentResponseHeaders = (request: Request, response: Response, context: any) => {
   const shopify = createShopifyApp(context);
   return shopify.addDocumentResponseHeaders(request, response);
 };
@@ -115,5 +111,5 @@ export default {
   login,
   registerWebhooks,
   addDocumentResponseHeaders,
-  createShopifyApp,
+  createShopifyApp
 };
